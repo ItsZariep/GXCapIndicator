@@ -24,7 +24,7 @@ void on_about(GtkMenuItem *menuitem, gpointer userdata)
 	gtk_widget_destroy(dialog);
 }
 
-void create_cap_indicator()
+void create_cap_indicator(void)
 {
 	if (capvisible)
 		return;
@@ -67,7 +67,7 @@ void create_cap_indicator()
 	}
 }
 
-void create_num_indicator()
+void create_num_indicator(void)
 {
 	if (numvisible)
 		return;
@@ -107,7 +107,7 @@ void create_num_indicator()
 	}
 }
 
-void create_window()
+void create_window(void)
 {
 	#ifdef WITHX11
 	d = XOpenDisplay(NULL);

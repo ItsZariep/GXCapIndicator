@@ -1,57 +1,41 @@
-void create_num_indicator();
-void create_cap_indicator();
+void create_num_indicator(void);
+void create_cap_indicator(void);
 
-void readconf()
+void readconf(void)
 {
-	char *home_dir = getenv("HOME");
-	if (home_dir == NULL)
+	const gchar *config_dir = g_get_user_config_dir(); ;
+	if (config_dir == NULL)
 	{
-		g_warning("HOME environment variable is not set.");
+		g_warning("Could not get g_get_user_config_dir");
 		nohome = 1;
 		return;
 	}
 
-	snprintf(config_file_path, sizeof(config_file_path), "%s/.config/gxcapindicator.conf", home_dir);
+	snprintf(config_file_path, sizeof(config_file_path), "%s/gxcapindicator.conf", config_dir);
 
-	FILE *file = fopen(config_file_path, "r");
+	GKeyFile *keyfile = g_key_file_new();
+	GError *error = NULL;
 
-	if (file == NULL)
+	if (!g_key_file_load_from_file(keyfile, config_file_path, G_KEY_FILE_NONE, &error))
 	{
-		file = fopen(config_file_path, "w");
-		if (file == NULL)
+		if (error != NULL)
 		{
-			g_warning("could not open %s for writing.", config_file_path);
-			nohome = 1;
-			return;
+			g_warning("Failed to load config file: %s", error->message);
+			g_error_free(error);
 		}
-		else
-		{
-			fclose(file);
-			return;
-		}
+		nohome = 1;
+		g_key_file_free(keyfile);
+		return;
 	}
 
-	char line[ML];
-	while (fgets(line, ML, file) != NULL)
-	{
-		char *name = strtok(line, "=");
-		char *value_str = strtok(NULL, "=");
+	// Read values from the INI file
+	showcap = g_key_file_get_integer(keyfile, "GXCapIndicator Configuration File", "showcap", NULL);
+	shownum = g_key_file_get_integer(keyfile, "GXCapIndicator Configuration File", "shownum", NULL);
+	updrate = g_key_file_get_integer(keyfile, "GXCapIndicator Configuration File", "updrate", NULL);
+	vcapstate = g_key_file_get_integer(keyfile, "GXCapIndicator Configuration File", "vcapstate", NULL);
+	vnumstate = g_key_file_get_integer(keyfile, "GXCapIndicator Configuration File", "vnumstate", NULL);
 
-		if (name != NULL && value_str != NULL)
-		{
-			if (strcmp(name, "showcap") == 0)
-				showcap = atoi(value_str);
-			else if (strcmp(name, "shownum") == 0)
-				shownum = atoi(value_str);
-			else if (strcmp(name, "updrate") == 0)
-				updrate = atoi(value_str);
-			else if (strcmp(name, "vcapstate") == 0)
-				vcapstate = atoi(value_str);
-			else if (strcmp(name, "vnumstate") == 0)
-				vnumstate = atoi(value_str);
-		}
-	}
-	fclose(file);
+	g_key_file_free(keyfile);
 }
 
 
@@ -75,7 +59,7 @@ void reset(GtkWidget *widget)
 }
 
 
-void saveconfig()
+void saveconfig(void)
 {
 	const gchar *cshowcap = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(gshowcap)) ? "1" : "0";
 	const gchar *cshownum = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(gshownum)) ? "1" : "0";
@@ -105,33 +89,25 @@ void saveconfig()
 		return;
 	}
 
-	FILE *output;
-	output = fopen(config_file_path, "w");
-	if (output == NULL)
+	GKeyFile *keyfile = g_key_file_new();
+	GError *error = NULL;
+
+	g_key_file_set_integer(keyfile, "GXCapIndicator Configuration File", "showcap", atoi(cshowcap));
+	g_key_file_set_integer(keyfile, "GXCapIndicator Configuration File", "shownum", atoi(cshownum));
+	g_key_file_set_integer(keyfile, "GXCapIndicator Configuration File", "vcapstate", atoi(cvcapstate));
+	g_key_file_set_integer(keyfile, "GXCapIndicator Configuration File", "vnumstate", atoi(cvnumstate));
+	g_key_file_set_string(keyfile, "GXCapIndicator Configuration File", "updrate", strlen(cupdrate) > 0 ? cupdrate : "1");
+
+	if (!g_key_file_save_to_file(keyfile, config_file_path, &error))
 	{
-		output = fopen(config_file_path, "w");
-		if (output == NULL)
-		{
-			g_warning("could not open %s for writing.", config_file_path);
-			nohome = 1;
-			return;
-		}
-		else
-		{
-			fclose(output);
-			return;
-		}
+		g_warning("Failed to save config file: %s", error->message);
+		g_error_free(error);
+		g_key_file_free(keyfile);
+		return;
 	}
-	else
-	{
-		fprintf(output, "[GXCapIndicator Configuration File]\n");
-		fprintf(output, "showcap=%s\n", cshowcap);
-		fprintf(output, "shownum=%s\n", cshownum);
-		fprintf(output, "vcapstate=%s\n", cvcapstate);
-		fprintf(output, "vnumstate=%s\n", cvnumstate);
-		fprintf(output, "updrate=%s\n", strlen(cupdrate) > 0 ? cupdrate : "1");
-		fclose(output);
-	}
+
+	g_key_file_free(keyfile);
+
 	reset(window);
 	gtk_widget_destroy(GTK_WIDGET(dialog));
 }

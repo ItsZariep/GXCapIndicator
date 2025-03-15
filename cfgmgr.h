@@ -1,4 +1,4 @@
-void cancelconfig()
+void cancelconfig(void)
 {
 	gtk_widget_destroy(dialog);
 }

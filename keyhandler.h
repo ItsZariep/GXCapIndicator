@@ -30,14 +30,14 @@ static int print_key_event(struct libinput_event *event)
 }
 
 
-static int handle_events(struct libinput *libinput)
+static int handle_events(struct libinput *input)
 {
 	struct libinput_event *event;
 
-	if (libinput_dispatch(libinput) < 0)
+	if (libinput_dispatch(input) < 0)
 		return -1;
 
-	while ((event = libinput_get_event(libinput)) != NULL)
+	while ((event = libinput_get_event(input)) != NULL)
 	{
 		switch (libinput_event_get_type(event))
 		{
@@ -52,19 +52,19 @@ static int handle_events(struct libinput *libinput)
 	return 0;
 }
 
-static int run_mainloop(struct libinput *libinput)
+static int run_mainloop(struct libinput *input)
 {
 	struct pollfd fd;
-	fd.fd = libinput_get_fd(libinput);
+	fd.fd = libinput_get_fd(input);
 	fd.events = POLLIN;
 
 	while (poll(&fd, 1, -1) > -1)
-		handle_events(libinput);
+		handle_events(input);
 	return 0;
 }
 #endif
 
-void *toggle_cap()
+void *toggle_cap(void)
 {
 	#ifdef WITHX11
 	XkbGetIndicatorState(d, XkbUseCoreKbd, &capstate);
@@ -76,7 +76,7 @@ void *toggle_cap()
 	return NULL;
 }
 
-void *check_cap()
+void *check_cap(void* arg)
 {
 	#ifdef WITHX11
 		XkbStateRec xkbState;
@@ -96,7 +96,7 @@ void *check_cap()
 	return NULL;
 }
 
-void *toggle_num()
+void *toggle_num(void)
 {
 	#ifdef WITHX11
 	XkbGetIndicatorState(d, XkbUseCoreKbd, &numstate);

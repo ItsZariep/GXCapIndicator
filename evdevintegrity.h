@@ -20,9 +20,9 @@
 	.close_restricted = close_restricted,
 };
 
-void check_udev()
+void check_udev(void)
 {
-struct udev *udev = udev_new();
+	struct udev *udev = udev_new();
 		if (udev == NULL)
 		{
 			g_error("Failed to initialize udev.");
@@ -64,8 +64,10 @@ gboolean check_permissions(const gchar* group_name)
 	}
 	gid = grp->gr_gid;
 
-	for (int i = 0; i < ngroups; i++) {
-		if (groups[i] == gid) {
+	for (int i = 0; i < ngroups; i++)
+	{
+		if (groups[i] == gid)	
+		{
 			g_free(groups);
 			return TRUE;
 		}
