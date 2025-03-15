@@ -1,4 +1,5 @@
 WITHX11 ?= 0
+PREFIX ?= /usr/local
 
 ifeq ($(WITHX11), 0)
 	XLIB = -ludev -linput -levdev -I/usr/include/libevdev-1.0/
@@ -30,17 +31,17 @@ clean:
 	rm -f $(OBJ) $(EXE) debug
 
 install: $(EXE)
-	install -Dm755 $(EXE) /usr/local/bin/$(EXE)
-	install -Dm755 gxcapindicator.desktop /usr/local/share/applications/gxcapindicator.desktop
-	install -Dm644 icons/keyboard-caps-disabled.svg /usr/local/share/icons/hicolor/32x32/devices/keyboard-caps-disabled.svg
-	install -Dm644 icons/keyboard-caps-enabled.svg /usr/local/share/icons/hicolor/32x32/devices/keyboard-caps-enabled.svg
-	install -Dm644 icons/keyboard-num-disabled.svg /usr/local/share/icons/hicolor/32x32/devices/keyboard-num-disabled.svg
-	install -Dm644 icons/keyboard-num-enabled.svg /usr/local/share/icons/hicolor/32x32/devices/keyboard-num-enabled.svg
+	install -Dm755 $(EXE) $(PREFIX)/bin/$(EXE)
+	install -Dm755 gxcapindicator.desktop $(PREFIX)/share/applications/gxcapindicator.desktop
+	install -Dm644 icons/keyboard-caps-disabled.svg $(PREFIX)/share/icons/hicolor/32x32/devices/keyboard-caps-disabled.svg
+	install -Dm644 icons/keyboard-caps-enabled.svg $(PREFIX)/share/icons/hicolor/32x32/devices/keyboard-caps-enabled.svg
+	install -Dm644 icons/keyboard-num-disabled.svg $(PREFIX)/share/icons/hicolor/32x32/devices/keyboard-num-disabled.svg
+	install -Dm644 icons/keyboard-num-enabled.svg $(PREFIX)/share/icons/hicolor/32x32/devices/keyboard-num-enabled.svg
 
 uninstall:
-	rm -f /usr/local/bin/$(EXE)
-	rm -f /usr/local/share/applications/gxcapindicator.desktop
-	rm -f /usr/local/share/icons/hicolor/32x32/devices/keyboard-caps-disabled.svg
-	rm -f /usr/local/share/icons/hicolor/32x32/devices/keyboard-caps-enabled.svg
-	rm -f /usr/local/share/icons/hicolor/32x32/devices/keyboard-num-disabled.svg
-	rm -f /usr/local/share/icons/hicolor/32x32/devices/keyboard-num-enabled.svg
+	rm -f $(PREFIX)/bin/$(EXE)
+	rm -f $(PREFIX)/share/applications/gxcapindicator.desktop
+	rm -f $(PREFIX)/share/icons/hicolor/32x32/devices/keyboard-caps-disabled.svg
+	rm -f $(PREFIX)/share/icons/hicolor/32x32/devices/keyboard-caps-enabled.svg
+	rm -f $(PREFIX)/share/icons/hicolor/32x32/devices/keyboard-num-disabled.svg
+	rm -f $(PREFIX)/share/icons/hicolor/32x32/devices/keyboard-num-enabled.svg
