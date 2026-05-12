@@ -1,6 +1,14 @@
 # GXCapIndicator
 
-<img src="https://raw.githubusercontent.com/ItzSelenux/ItzSelenux.github.io/main/res/projects/gxcapindicator.svg" alt="GXCapIndicator Logo" width="111px" />
+<img src="https://codeberg.org/ItsZariep/pages-hugo/raw/branch/main/static/assets/projects/qxcapindicator/qxcapindicator.webp" alt="GXCapIndicator Logo" width="111px" />
+
+> [!WARNING]
+> ## Project migrated to Qt6 and Moved to [codeberg](https://codeberg.org/itszariep/qxcapindicator)
+> [![Get in on Codeberg](https://codeberg.org/ItsZariep/.profile/raw/branch/main/movedtocodeberg.webp)](https://codeberg.org/itszariep/qxcapindicator)
+
+ > [!WARNING]  
+> due to [Ayatana](https://github.com/AyatanaIndicators/libayatana-appindicator-glib) core codebase being changed, this project may not work in the future, please use [QXCapIndicator](https://codeberg.org/itszariep/qxcapindicator) (Qt6 version of this program) if that happens
+
 
 **GXCapIndicator** is a simple tool for indicating the status of Caps Lock and Num Lock keys in the system tray.
 
